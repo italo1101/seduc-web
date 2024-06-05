@@ -37,22 +37,23 @@ const CadastroVideo: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const addTag = (value: string, type: string) => {
+  const addTag = (value: string, type: keyof FormData) => {
     if (value.trim() !== "") {
       setFormData((prev) => ({
         ...prev,
-        [type]: [...prev[type], value.trim()],
+        [type]: [...(prev[type] as string[]), value.trim()],
         [`${type}Input`]: "", // Limpar o input após adicionar a tag
       }));
     }
   };
 
-  const removeTag = (index: number, type: string) => {
+  const removeTag = (index: number, type: keyof FormData) => {
     setFormData((prev) => ({
       ...prev,
-      [type]: prev[type].filter((_, i) => i !== index),
+      [type]: (prev[type] as string[]).filter((_, i) => i !== index),
     }));
   };
+
   const [resultMessage, setResultMessage] = useState<string>("");
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -145,7 +146,7 @@ const CadastroVideo: React.FC = () => {
           required
           className="w-full p-2 border border-gray-300 rounded"
         />
-  
+
         {/* Input para adicionar novo eixo */}
         <div className="mb-2 p-2 border border-gray-300 rounded">
           <div className="flex items-center">
@@ -181,7 +182,7 @@ const CadastroVideo: React.FC = () => {
             ))}
           </div>
         </div>
-  
+
         {/* Input para adicionar nova habilidade */}
         <div className="mb-2 p-2 border border-gray-300 rounded">
           <div className="flex items-center">
@@ -217,7 +218,7 @@ const CadastroVideo: React.FC = () => {
             ))}
           </div>
         </div>
-  
+
         {/* Botão de submit */}
         <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded">
           Adicionar
