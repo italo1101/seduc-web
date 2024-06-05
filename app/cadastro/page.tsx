@@ -13,7 +13,7 @@ export default function Cadastro() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Verificação básica para garantir que todos os campos estão preenchidos
