@@ -15,6 +15,7 @@ interface FormData {
   skills: string[];
   axisInput: string;
   skillsInput: string;
+  registeredBy: string; // Adicionado o campo que estava faltando
 }
 
 const VideoManager: React.FC = () => {
@@ -29,9 +30,10 @@ const VideoManager: React.FC = () => {
     skills: [],
     axisInput: "",
     skillsInput: "",
+    registeredBy: "", 
   });
 
-  let videoId = window.location.search.substring(1); //! O id do video que vai ser editado ou apagado
+  const videoId = new URLSearchParams(window.location.search).get("id") || ""; 
   const [resultMessage, setResultMessage] = useState<string>("");
 
   useEffect(() => {
@@ -54,6 +56,7 @@ const VideoManager: React.FC = () => {
             yearTeaching,
             axis,
             skills,
+            registeredBy, // Garantir que o campo está sendo mapeado
           } = data[0];
           setFormData({
             url: url || "",
@@ -65,6 +68,7 @@ const VideoManager: React.FC = () => {
             skills: skills || [],
             axisInput: "",
             skillsInput: "",
+            registeredBy: registeredBy || "", // Garantir que o campo está sendo mapeado
           });
         } else {
           console.error("Dados retornados no formato incorreto:", data);
@@ -78,6 +82,7 @@ const VideoManager: React.FC = () => {
 
     fetchVideoData(videoId);
   }, [videoId]);
+
   if (isLoading) {
     return <div>Carregando...</div>;
   }
@@ -89,20 +94,20 @@ const VideoManager: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const addTag = (value: string, type: string) => {
+  const addTag = (value: string, type: keyof FormData) => {
     if (value.trim() !== "") {
       setFormData((prev) => ({
         ...prev,
-        [type]: [...prev[type], value.trim()],
+        [type]: [...(prev[type] as string[]), value.trim()],
         [`${type}Input`]: "",
       }));
     }
   };
 
-  const removeTag = (index: number, type: string) => {
+  const removeTag = (index: number, type: keyof FormData) => {
     setFormData((prev) => ({
       ...prev,
-      [type]: prev[type].filter((_, i) => i !== index),
+      [type]: (prev[type] as string[]).filter((_, i) => i !== index),
     }));
   };
 
@@ -136,6 +141,7 @@ const VideoManager: React.FC = () => {
       );
     }
   };
+
   const handleDelete = async () => {
     try {
       const response = await fetch(
@@ -154,18 +160,21 @@ const VideoManager: React.FC = () => {
       setResultMessage("Erro ao deletar vídeo.");
     }
   };
-  const extractYouTubeVideoId = (url) => {
+
+  const extractYouTubeVideoId = (url: string) => {
     const match = url.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/);
     return match ? match.pop() : null;
   };
+
   const youtubeVideoId = extractYouTubeVideoId(formData.url);
+
   return (
     <div className="text-black min-h-screen bg-gray-100 p-8">
       <header className="flex justify-between items-center mb-4">
         <Image src={logo} alt="EducaRecife Logo" width={150} height={50} />
         <nav className="flex space-x-4">
           <Link href="/consulta" passHref>
-            <div className="text-blue-500 hover:underline">CONSULTAR</div>
+          <div className="text-blue-500 hover:underline">CONSULTAR</div>
           </Link>
           <Link href="/cadastro-video" passHref>
             <div className="text-blue-500 hover:underline">CADASTRAR VÍDEO</div>
@@ -332,4 +341,5 @@ const VideoManager: React.FC = () => {
     </div>
   );
 };
+
 export default VideoManager;
