@@ -2,14 +2,8 @@
   "version": 2,
   "builds": [
     {
-      "src": "/app/page.tsx",
-      "use": "@vercel/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "/app/page.tsx"
+      "src": "next.config.js",
+      "use": "@vercel/next"
     }
   ]
 }
