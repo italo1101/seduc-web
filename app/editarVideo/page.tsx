@@ -231,7 +231,7 @@ const VideoManager: React.FC = () => {
             className="p-2 border border-gray-300 rounded"
           >
             <option value="">Etapa</option>
-            <option value="ensino-medio">Ensino Infantil</option>
+            <option value="ensino-medio">Ensino infantoJuvenil</option>
             <option value="ensino-fundamental">Ensino Fundamental</option>
           </select>
           <input
