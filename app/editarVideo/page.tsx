@@ -31,13 +31,13 @@ const VideoManager: React.FC = () => {
     skillsInput: "",
   });
 
-  let videoId = window.location.search.substring(1);
+  const videoId =
+    typeof window !== "undefined" ? window.location.search.substring(1) : "";
   const [resultMessage, setResultMessage] = useState<string>("");
-
   useEffect(() => {
     const fetchVideoData = async (id: string) => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_API_URL}/videosbncc/filter?id=${id}`;
+        const url = `https://seduc-api.vercel.app/videosbncc/filter?id=${id}`;
         const response = await fetch(url);
         if (!response.ok) {
           throw new Error("Erro ao buscar vídeo.");
@@ -89,20 +89,20 @@ const VideoManager: React.FC = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const addTag = (value: string, type: string) => {
+  const addTag = (value: string, type: keyof FormData) => {
     if (value.trim() !== "") {
       setFormData((prev) => ({
         ...prev,
-        [type]: [...prev[type], value.trim()],
+        [type]: [...(prev[type] as string[]), value.trim()],
         [`${type}Input`]: "",
       }));
     }
   };
 
-  const removeTag = (index: number, type: string) => {
+  const removeTag = (index: number, type: keyof FormData) => {
     setFormData((prev) => ({
       ...prev,
-      [type]: prev[type].filter((_, i) => i !== index),
+      [type]: (prev[type] as string[]).filter((_, i) => i !== index),
     }));
   };
 
@@ -116,7 +116,7 @@ const VideoManager: React.FC = () => {
     };
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/videosbncc/update/${videoId}`,
+        `https://seduc-api.vercel.app/videosbncc/update/${videoId}`,
         {
           method: "PUT",
           headers: {
@@ -139,7 +139,7 @@ const VideoManager: React.FC = () => {
   const handleDelete = async () => {
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/videosbncc/delete/${videoId}`,
+        `https://seduc-api.vercel.app/videosbncc/delete/${videoId}`,
         { method: "DELETE" }
       );
       if (!response.ok) {
@@ -154,7 +154,7 @@ const VideoManager: React.FC = () => {
       setResultMessage("Erro ao deletar vídeo.");
     }
   };
-  const extractYouTubeVideoId = (url) => {
+  const extractYouTubeVideoId = (url: string) => {
     const match = url.match(/youtube\.com.*(\?v=|\/embed\/)(.{11})/);
     return match ? match.pop() : null;
   };
@@ -181,7 +181,7 @@ const VideoManager: React.FC = () => {
           <img
             src={`https://img.youtube.com/vi/${youtubeVideoId}/0.jpg`}
             alt="Thumbnail do vídeo"
-            className="w-full h-auto object-cover rounded h-48 w-96"
+            className="object-cover h-48 w-96 rounded h-48 w-96"
           />
           <p className="mt-2 text-sm text-gray-600">
             Cadastrado em: 17/05/2024
@@ -210,7 +210,6 @@ const VideoManager: React.FC = () => {
           <input
             name="registeredBy"
             placeholder="Cadastrado por"
-            value={formData.registeredBy}
             onChange={handleChange}
             required
             className="p-2 border border-gray-300 rounded"
