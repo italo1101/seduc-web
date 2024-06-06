@@ -1,20 +1,11 @@
 import React from "react";
 import Link from "next/link";
-
-interface VideoBNCC {
-  id: number;
-  date: string;
-  title: string;
-  year: string;
-  stage: string;
-  axis: string;
-  skills: string;
-}
+import { VideoBNCC } from "../../types"; 
 
 interface TableProps {
   videos: VideoBNCC[];
-  onEdit: (id: number) => void;
-  onViewMore?: (id: number) => void; // Adicionado caso seja necessário uma função separada para "Ver mais"
+  onEdit: (id: string) => void;
+  onViewMore?: (id: string) => void; 
 }
 
 const Table: React.FC<TableProps> = ({
